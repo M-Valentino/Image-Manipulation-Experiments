@@ -13,6 +13,9 @@ import java.util.ArrayList;
  *
  */
 public class ConvertToPPM {
+	
+    static int imageWidth = 0;
+    static int imageHeight = 0;
      
     public static void main(String[] args) {
     	
@@ -33,6 +36,12 @@ public class ConvertToPPM {
              * results in a mirrored image.
              */
             for (int i = 0; i < fileContent.length ; i++) {
+            	if (i == 18) {
+            		imageWidth = fileContent[i];
+            	}
+            	if (i == 22) {
+            		imageHeight = fileContent[i];
+            	}
             	// Byte at index 53 is where the bitmap file header ends.
             	if (i > 53) {
             		// Lambda function converts bytes from signed to unsigned.
@@ -69,7 +78,7 @@ public class ConvertToPPM {
     	try {
     		FileWriter fw = new FileWriter(name);
     		// Writes the file header of PPM image.
-    		fw.write("P3\n100 100\n255\n");
+    		fw.write("P3\n" + imageWidth + " " +imageHeight + "\n255\n");
     		/* rgbValues is indexed from the highest to the lowest index because
     		 * pixels in the read bitmap image are stored upsidedown.
     		 */
@@ -78,7 +87,7 @@ public class ConvertToPPM {
     			 * that hold data for one pixel which are the red, green, and blue
     			 * color channels.
     			 */
-    			if (i % 300 == 0) {
+    			if (i % (imageWidth * 3)  == 0) {
     				fw.write("\n");
     			}
     			fw.write(rgbValues.get(i) + " ");
@@ -130,14 +139,14 @@ public class ConvertToPPM {
     	try {
     		FileWriter fw = new FileWriter(name);
     		// Writes the file header of PPM image.
-    		fw.write("P2\n100 100\n255\n");
+    		fw.write("P2\n" + imageWidth + " " +imageHeight + "\n255\n");
   
     		for (int i = bawRGBValues.size() - 1; i >= 0 ; i--) {
     			fw.write(bawRGBValues.get(i) + " ");
     			/* PPM image needs a new line per 100 pixels. Only one int
     			 * needed per pixel since the result will be black and white.
     			 */
-    			if (i % 100 == 0) {
+    			if (i % imageWidth == 0) {
     				fw.write("\n");
     			}
     		}
@@ -161,7 +170,7 @@ public class ConvertToPPM {
     		String tempString = "";
     		FileWriter fw = new FileWriter(name);
     		// Writes the file header of PPM image.
-    		fw.write("P3\n100 200\n255\n");
+    		fw.write("P3\n" + imageWidth + " " + imageHeight*2 + "\n255\n");
     		/* rgbValues is indexed from the highest to the lowest index because
     		 * pixels in the read bitmap image are stored upsidedown.
     		 */
@@ -171,7 +180,7 @@ public class ConvertToPPM {
     			 * that hold data for one pixel which are the red, green, and blue
     			 * color channels.
     			 */
-    			if (i % 300 == 0) {
+    			if (i % (imageWidth * 3) == 0) {
     				// write function called twice to stretch image.
     				fw.write( tempString + "\n");
     				fw.write( tempString + "\n");
